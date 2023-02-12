@@ -17,7 +17,6 @@ run-buenavista:
 	python3 -m duckdbt.server > /dev/null 2>&1 &
 
 run-dbt:
-	dbt run --profiles-dir $$(pwd)
 	.venv/bin/python starter/template_engine.py
 	.venv/bin/dbt run --profiles-dir $$(pwd)
 
@@ -27,3 +26,15 @@ prequisite:
 	@.venv/bin/pip install -r requirements.txt
 	@.venv/bin/python starter/template_engine.py
 
+
+create-report:
+	. .venv/bin/activate
+	make run-dbt
+	make evidence-run
+	make launch-nginx
+
+launch-nginx:
+	docker run -p 3000:3000 \
+		-v $$(pwd)/nginx/default.conf:/etc/nginx/conf.d/default.conf \
+		-v $$(pwd)/reports/build/:/www/evidence/ \
+		--name evidence-server --rm nginx
