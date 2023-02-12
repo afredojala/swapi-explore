@@ -27,6 +27,9 @@ jobs:
         
       - name: evidence
         run: make evidence-run
+        env:
+          DATABASE: duckdb
+          DUCKDB_FILENAME: swapi.duckdb
 
       - name: Deploy to netlify
         uses: netlify/actions/cli@master
