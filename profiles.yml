@@ -1,0 +1,6 @@
+serverlessbi:
+  outputs:
+    dev:
+      type: duckdb
+      path: reports/swapi.duckdb
+  target: dev
