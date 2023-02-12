@@ -18,6 +18,8 @@ run-buenavista:
 
 run-dbt:
 	dbt run --profiles-dir $$(pwd)
+	.venv/bin/python starter/template_engine.py
+	.venv/bin/dbt run --profiles-dir $$(pwd)
 
 
 prequisite:
