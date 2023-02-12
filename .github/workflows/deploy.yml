@@ -23,8 +23,7 @@ jobs:
         run: make run-dbt
         
       - name: evidence
-        run: |
-          make evidence-build
+        run: make evidence-build
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
