@@ -1,6 +1,6 @@
 # Architectural Decision
 
-For this use case, a serverless BI approach has been utilized.
+Following the assumptions, a serverless BI approach has been utilized.
 
 The serverless BI is built up with 3 components:
 
@@ -10,11 +10,10 @@ The serverless BI is built up with 3 components:
 
 The serverless BI architecture is orchestrated by Github Actions (by utilizing the 2000 free minutes you get per month).
 
-This stack is suited towards people with more SQL knowledge compared to python
-
 ### Duckdb
-The base component of the stack is duckdb, which is an embedded OLAP database that excels at doing analytical queries on a single machine.
+The pillar of the stack is duckdb, which is an embedded OLAP database that excels at doing analytical queries on a single machine.
 This was chosen to be utilized since we will do a full-refresh each iteration and the data does not need to be exposed to any other system apart from the presentation layer.
+
 However, this can be changed in duckdb due to the support of httpfs extension. This particular extensions makes it possible to save and load tables to external s3 compliant locations (Azure, uncertain).
 Which makes it easy to convert the backend to be a datalake instead.
 Since SQL dialect of duckdb is postgres-compliant, it is an easy switch to migrate towards a central database instead.
@@ -24,13 +23,16 @@ When combining duckdb and dbt, you are able to run python models without bringin
 Thus it is possible to run the entire ELT DAG without using any other external tools. Apart from this particular combination, dbt was chosen due to the fact that it becomes easy to write DAGs with SQL, it's table level lineage and it's built in test system (Not used in this repo).
 
 ### Evidence
-Evidence is a new tool that generates dashboard as static sites from markdown and SQL. In this serverless architecture approach it is a perfect match, since it removes the hosting of a BI tool such as superset, tableau or PowerBI (or any other data app frameworks). The generated report from evidence can be hosted in github pages, netlify or similar.
+Evidence is a new tool that generates dashboard as static sites from markdown and SQL.
+In this serverless architecture approach it is a perfect match, since it removes the hosting of a BI tool such as superset, tableau or PowerBI (or any other data app frameworks).
+The generated report from evidence can be hosted in github pages, netlify or nginx.
 
 ## Drawbacks
 
 ### Self serving analytics
-One of the major drawbacks of the serverless BI approach is that it doesn't promote self serving analytics at all, since the systems will be completly isolated in this approach.
-This can be mitigated by using external materializations (as mentioned above) for duck-dbt, hosting a trino server for querying the data in the lake and hosting superset. Of course we loose the serverless approach on this, but we gain the ability to promote self serving analytics.
+One of the major drawbacks of the serverless BI approach is that it doesn't promote self serving analytics at all, since the systems will be completely isolated in this approach.
+This can be mitigated by using external materializations (as mentioned above) for duck-dbt. Hosting a trino server for querying the data and hosting superset (or lightdash) for visualization.
+Of course we would loose the serverless approach with these changes, but we gain the ability to promote self serving analytics and expose the extracted & transformed data to a larger audience.
 
 ### Scale
 Another drawback is of course that this solution doesn't scale well. You can of course mitigate that by doing what was
@@ -42,5 +44,13 @@ The major benefit of this approach is that no infrastructure is needed. Which is
 
 ### Simple Stack
 
+
+
+# Other approaches
+
+## Dagster & Postgres
+
+Another approach, and a more python centric one, would be to switch out duckdb to postgres and github actions with dagster.
+We would still utilize dbt for the transformation, but move the ingestion into dagster Software Defined assets.
 
 
