@@ -12,15 +12,21 @@ The serverless BI architecture is orchestrated by Github Actions (by utilizing t
 
 ### Duckdb
 The pillar of the stack is duckdb, which is an embedded OLAP database that excels at doing analytical queries on a single machine.
-This was chosen to be utilized since we will do a full-refresh each iteration and the data does not need to be exposed to any other system apart from the presentation layer.
+Duckdbs internal database was chosen to be utilized since we will do a full-refresh each run and the data does not need to be exposed to any other system apart from the presentation layer.
 
 However, this can be changed in duckdb due to the support of httpfs extension. This particular extensions makes it possible to save and load tables to external s3 compliant locations (Azure, uncertain).
 Which makes it easy to convert the backend to be a datalake instead.
 Since SQL dialect of duckdb is postgres-compliant, it is an easy switch to migrate towards a central database instead.
 
 ### dbt
-When combining duckdb and dbt, you are able to run python models without bringing in additional compute (such as a spark cluster / snowpark). As such, although maybe not 100% recommended, you can do the Extract & Load into raw tables with python models. 
-Thus it is possible to run the entire ELT DAG without using any other external tools. Apart from this particular combination, dbt was chosen due to the fact that it becomes easy to write DAGs with SQL, it's table level lineage and it's built in test system (Not used in this repo).
+When combining duckdb and dbt, you are able to run python models without bringing in additional compute (such as a spark cluster / snowpark). Which brings some extra convience if something is tedious to do in SQL but rather simple to do with python.
+
+With dbt and duckdb, although maybe not 100% recommended, you can do the Extract & Load into raw tables with python models.
+Thus it is possible to run the entire ELT DAG without using any other external tools.
+
+Otherwise it would be possible to replace the duckdbt ingestion layer with meltano for example (if we want to continue the serverless approach) to do the EL.
+
+dbt were also chosen due to the fact that it becomes easy to write DAGs with SQL, its table level lineage and its built in test system (Not used in this repo).
 
 ### Evidence
 Evidence is a new tool that generates dashboard as static sites from markdown and SQL.
@@ -46,11 +52,13 @@ The major benefit of this approach is that no infrastructure is needed. Which is
 
 
 
-# Other approaches
+# Other approaches, Non serverless
 
 ## Dagster & Postgres
 
 Another approach, and a more python centric one, would be to switch out duckdb to postgres and github actions with dagster.
-We would still utilize dbt for the transformation, but move the ingestion into dagster Software Defined assets.
+We would still utilize dbt for the transformation, but move the ingestion into dagster Software Defined assets. 
+One benefit of dagster compared to the other is that dagster can provide an holistic view of the lineage within the chosen data stack.
+The combination of airbyte, dbt and dagster is a powerful and easy way to get started with the modern data stack
 
 
