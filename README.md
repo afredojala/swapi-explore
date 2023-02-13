@@ -1,5 +1,7 @@
 # SWAPI inspection
 
+To see the results and documentation go to [this link](https://gifted-swanson-ae14c7.netlify.app/)
+
 To get your local environment up run
 
 ```
@@ -24,4 +26,6 @@ which will run all necessary transformations and create a dashboard that is host
 A Limitation with duckdb, only one thread per database. Utilize a postgres proxy (like buenavista) to handle multiple connection to better develop locally
 
 ### Increase developer experience
+
+Dockerize the complete approach, can share the duckdb database between container and run everything with compose
 
