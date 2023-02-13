@@ -7,7 +7,7 @@ evidence-dev:
 	npm --prefix ./reports run dev #> /dev/null 2>&1 &
 
 evidence-build:
-	npm --prefix ./reports run build
+	DATABASE=duckdb DUCKDB_FILENAME=swapi.duckdb npm --prefix ./reports run build
 
 evidence-run:
 	make evidence-update
