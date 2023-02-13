@@ -25,6 +25,7 @@ prequisite:
 	@python3 -m venv .venv
 	@.venv/bin/pip install -r requirements.txt
 	@.venv/bin/python starter/template_engine.py
+	make evidence-update
 
 
 create-report:
