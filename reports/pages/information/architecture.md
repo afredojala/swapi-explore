@@ -14,8 +14,8 @@ The serverless BI architecture is orchestrated by Github Actions (by utilizing t
 The pillar of the stack is duckdb, which is an embedded OLAP database that excels at doing analytical queries on a single machine.
 Duckdbs internal database was chosen to be utilized since we will do a full-refresh each run and the data does not need to be exposed to any other system apart from the presentation layer.
 
-However, this can be changed in duckdb due to the support of httpfs extension. This particular extensions makes it possible to save and load tables to external s3 compliant locations (Azure, uncertain).
-Which makes it easy to convert the backend to be a datalake instead.
+However, this can be changed in duckdb due to the support of httpfs extension. This particular extensions makes it possible to save and load tables to external s3 compliant locations (Azure, Especially since they implement the fsspec on 0.7.0!).
+Thus makes it easy to convert the backend to be a datalake instead.
 Since SQL dialect of duckdb is postgres-compliant, it is an easy switch to migrate towards a central database instead.
 
 ### dbt
@@ -41,12 +41,11 @@ This can be mitigated by using external materializations (as mentioned above) fo
 Of course we would loose the serverless approach with these changes, but we gain the ability to promote self serving analytics and expose the extracted & transformed data to a larger audience.
 
 ### Scale
-Another drawback is of course that this solution doesn't scale well. You can of course mitigate that by doing what was
-
+Another drawback is of course that this solution doesn't scale well. 
 ## Benefits
 
 ### Infrastructure
-The major benefit of this approach is that no infrastructure is needed. Which is particularly appealing in this use case. Since we have no infrastructure, the cost will be reduced significantly utilizing this approach
+The major benefit of this approach is that no infrastructure is needed. Which is particularly appealing in this use case. Since we have no infrastructure, the cost will be reduced significantly utilizing this approach.
 
 ### Simple Stack
 
@@ -59,6 +58,6 @@ The major benefit of this approach is that no infrastructure is needed. Which is
 Another approach, and a more python centric one, would be to switch out duckdb to postgres and github actions with dagster.
 We would still utilize dbt for the transformation, but move the ingestion into dagster Software Defined assets. 
 One benefit of dagster compared to the other is that dagster can provide an holistic view of the lineage within the chosen data stack.
-The combination of airbyte, dbt and dagster is a powerful and easy way to get started with the modern data stack
+The combination of airbyte, dbt and dagster is a powerful and easy way to get started with the modern data stack.
 
 
