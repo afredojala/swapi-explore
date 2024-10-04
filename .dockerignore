@@ -1,3 +1,4 @@
 target/
+.venv/
 dbt_packages/
 reports/node_modules
